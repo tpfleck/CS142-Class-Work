@@ -35,28 +35,53 @@ import javax.script.ScriptException;
 import static java.lang.System.*;
 
 import javax.swing.border.MatteBorder;
+import javax.swing.JToolBar;
 
+/**
+ * <h1>Fleckster v0.1 Beta - Calculator</h1>
+ * The Calculator program is a OSX Calculator look alike with limited 
+ * functionality compared to the actual OSX Calculator. Thus this being
+ * a calculator, no introduction how to use it is necessary.
+ * <p>
+ * <b>Note:</b> The source code is adequately commented for easy reading
+ * but make no promises that it makes sense. Enjoy!
+ * 	
+ * @author Tyler Fleckenstein
+ * @version 0.1
+ * @since 2015-03-10
+ */
 
+/**
+ * This is the main class Calculator that holds the variables to be used
+ */
 public class Calculator {
 
 	private JFrame frmFlecksterVBeta;
 	
 	double firstNumber;
-	String stringfirstNumber = Double.toString(firstNumber);
+	String stringfirstNumber = Double.toString(firstNumber); //Converts 'double firstNumber' to a string
 	
 	double secondNumber;
-	String stringsecondNumber = Double.toString(secondNumber);
+	String stringsecondNumber = Double.toString(secondNumber); //Converts 'double secondNumber' to a string
 	
 	double result;
-    String stringResult = Double.toString(result);
+    String stringResult = Double.toString(result); //Converts result to a string
     
-    static String textField;
+    String textField; // Holds value of 'textArea.getText()' or value is 'null' when 'textArea.getText()' is empty
+    
+    /**
+     * Other variables used but not show above:
+     * String oldStr; 
+     * 
+     * This variable is only used once and looks like this when used:
+     * String oldStr = stringfirstNumber;
+     */
     
 
     
-	/**
-	 * Launch the application.
-	 */
+    /**
+     * Below will run the calculator
+     */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -73,17 +98,19 @@ public class Calculator {
 	}
 
 	/**
-	 * Create the application.
+	 * This method initializes the calculator
 	 */
 	public Calculator() {
 		
-		initialize();
+		initialize(); // Calls on the method initialize()
 		
 		
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * This method initializes the content of the JFrame
+	 * and holds all the operations for buttons
+	 * on the calculator
 	 */
 	private void initialize() {
 		frmFlecksterVBeta = new JFrame();
@@ -110,9 +137,9 @@ public class Calculator {
 		panel.setLayout(null);
 		
 		final JTextArea textArea = new JTextArea(" ");
+		textArea.setAutoscrolls(false);
 		textArea.setForeground(Color.WHITE);
-		textArea.setLineWrap(true);
-		textArea.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
+		textArea.setFont(new Font("Lucida Grande", Font.PLAIN, 32));
 		textArea.setEditable(false);
 		textArea.setBorder(null);
 		textArea.setBackground(darkgrayColor);
@@ -129,7 +156,6 @@ public class Calculator {
 		btn_0.setOpaque(true);
 		btn_0.setBackground(lightgrayColor);
 		btn_0.setBorder(null);
-//		btn_0.setMargin(new Insets(10,20,10,10));
 		btn_0.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				textArea.append("0");
@@ -282,15 +308,26 @@ public class Calculator {
 		btn_Dot.setBorder(null);
 		btn_Dot.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (textField == null) {
+				textField = textArea.getText();
+				if (textField != null && textField.contains(".")) { 
+					if (textField.charAt(0) == '=' && textField.endsWith(".0")) {
+						stringResult = stringResult.replaceAll("(?<=^\\d+)\\.0*$", "");
+						textArea.setText(stringResult + ".");
+						textField = textArea.getText();
+					}
+					else if (textField.endsWith(".") != true && textField.contains(".")
+							&& textField.matches("[^A-Za-z0-9]") != true) {
+						textArea.setText(textField + ".");
+					}
+					else if (textField.contains(".") && textField.endsWith(".") != true) {
+						textArea.setText(textField);
+						textField = textArea.getText();
+					}
+				}
+				else {
 					textArea.append(".");
-				}
-				else if (textField.charAt(1) == '=' && textField.endsWith(".0")) {
-					stringResult = stringResult.replaceAll("(?<=^\\d+)\\.0*$", "");
-					textArea.setText(stringResult + ".");
 					textField = textArea.getText();
-				}
-					
+				}	
 			}
 		});
 		btn_Dot.setBounds(184, 246, 60, 48);
@@ -319,10 +356,10 @@ public class Calculator {
 		btn_Multiply.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (textField == null) {
-					textArea.append(" * ");
+					textArea.append("*");
 				}
-				else if (textField.charAt(1) == '=') {
-					textArea.setText(stringResult + " * ");
+				else if (textField.charAt(0) == '=') {
+					textArea.setText(stringResult + "*");
 				}
 			}
 		});
@@ -337,11 +374,16 @@ public class Calculator {
 		btn_Add.setBorder(null);
 		btn_Add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (textField == null) {
-					textArea.append(" + ");
+				if (textField != null && textField.contains("+") != true) {
+					if (textField.charAt(0) == '=') {
+						textArea.setText(stringResult + "+");
+					}
+					else {
+						textArea.append("+");
+					}
 				}
-				else if (textField.charAt(1) == '=') {
-					textArea.setText(stringResult + " + ");
+				else {
+					textArea.append("+");
 				}
 			}
 		});
@@ -357,10 +399,10 @@ public class Calculator {
 		btn_Subtract.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (textField == null) {
-					textArea.append(" - ");
+					textArea.append("-");
 				}
-				else if (textField.charAt(1) == '=') {
-					textArea.setText(stringResult + " - ");
+				else if (textField.charAt(0) == '=') {
+					textArea.setText(stringResult + "-");
 				}
 			}
 		});
@@ -376,10 +418,10 @@ public class Calculator {
 		btn_Divide.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (textField == null) {
-					textArea.append(" / ");
+					textArea.append("/");
 				}
-				else if (textField.charAt(1) == '=') {
-					textArea.setText(stringResult + " / ");
+				else if (textField.charAt(0) == '=') {
+					textArea.setText(stringResult + "/");
 				}
 			}
 		});
@@ -397,14 +439,14 @@ public class Calculator {
 				if (textField == null) {
 					result = Math.sqrt((Double.parseDouble(textArea.getText())));
 					stringResult = Double.toString(result);
-					textArea.setText(" = " + stringResult);
+					textArea.setText("=" + stringResult);
 					textField = textArea.getText();
 				}
-				else if (textField.charAt(1) == '=') {
+				else if (textField.charAt(0) == '=') {
 					textArea.setText(stringResult);
 					result = Math.sqrt((Double.parseDouble(textArea.getText())));
 					stringResult = Double.toString(result);
-					textArea.setText(" = " + stringResult);
+					textArea.setText("=" + stringResult);
 				}
 			}
 		});
@@ -422,14 +464,14 @@ public class Calculator {
 					if (textField == null) {
 						result = Math.pow((Double.parseDouble(textArea.getText())), 2);
 						stringResult = Double.toString(result);
-						textArea.setText(" = " + stringResult);
+						textArea.setText("=" + stringResult);
 						textField = textArea.getText();
 					}
-					else if (textField.charAt(1) == '=') {
+					else if (textField.charAt(0) == '=') {
 						textArea.setText(stringResult);
 						result = Math.pow((Double.parseDouble(textArea.getText())), 2);
 						stringResult = Double.toString(result);
-						textArea.setText(" = " + stringResult);
+						textArea.setText("=" + stringResult);
 					}
 				}
 			});
@@ -445,7 +487,7 @@ public class Calculator {
 		btn_Power.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				firstNumber = Double.parseDouble(textArea.getText());
-				textArea.append(" ^ ");
+				textArea.append("^");
 				stringfirstNumber = textArea.getText();
 			}
 		});
@@ -463,7 +505,17 @@ public class Calculator {
 			public void actionPerformed(ActionEvent e) {
 			    ScriptEngineManager mgr = new ScriptEngineManager();
 			    ScriptEngine engine = mgr.getEngineByName("JavaScript");
-			    if (stringfirstNumber.contains(" ^ ") == true) {
+			    if (textField == null) {
+					try {
+						stringResult = String.valueOf(engine.eval(textArea.getText()));
+						textArea.setText(null);
+						textArea.append("=" + stringResult);
+						textField = textArea.getText();
+					} catch (ScriptException e1) {
+						e1.printStackTrace();
+					}
+			    }
+			    else if (stringfirstNumber.contains("^") == true) {
 			    	String oldStr = stringfirstNumber;
 			    	stringfirstNumber = textArea.getText();
 			    	stringfirstNumber = stringfirstNumber.replace(oldStr, "");
@@ -471,25 +523,15 @@ public class Calculator {
 		    		result = Math.pow(firstNumber, secondNumber); 
 		    		textArea.setText(null);
 		    		stringResult = Double.toString(result);
-		    		textArea.append(" = " + stringResult);
+		    		textArea.append("=" + stringResult);
 		    		textField = textArea.getText();
 			    }
-			    else if (textField == null) {
-					try {
-						stringResult = String.valueOf(engine.eval(textArea.getText()));
-						textArea.setText(null);
-						textArea.append(" = " + stringResult);
-						textField = textArea.getText();
-					} catch (ScriptException e1) {
-						e1.printStackTrace();
-					}
-			    }
-			    else if (textField.charAt(1) == '=') {
+			    else if (textField.charAt(0) == '=') {
 					try {
 						textArea.setText(stringResult.replaceAll("=", ""));
 						stringResult = String.valueOf(engine.eval(textArea.getText()));
 						textArea.setText(null);
-						textArea.append(" = " + stringResult);
+						textArea.append("=" + stringResult);
 						textField = textArea.getText();
 					} catch (ScriptException e1) {
 						e1.printStackTrace();
@@ -508,8 +550,16 @@ public class Calculator {
 		btn_ParLeft.setBorder(null);
 		btn_ParLeft.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				textArea.append("( ");
-				textField = null;
+				textField = textArea.getText();
+				if (textField.charAt(0) == '=') {
+					textArea.setText(stringResult + "*(");
+				}
+				else if (textField.matches("[0-9]") != true) {
+					textArea.append("*(");
+				}
+				else {
+					textArea.append("(");
+				}
 			}
 		});
 		btn_ParLeft.setForeground(Color.BLACK);
@@ -522,11 +572,15 @@ public class Calculator {
 		btn_ParRight.setBackground(grayColor);
 		btn_ParRight.setOpaque(true);
 		btn_ParRight.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				textArea.append(" )");
-				textField = null;
-			}
-		});
+				public void actionPerformed(ActionEvent e) {
+					if (textField == null) {
+						textArea.append(")");
+					}
+					else if (textField.charAt(0) == '=') {
+						textArea.setText(stringResult + ")");
+					}
+				}
+			});
 		btn_ParRight.setForeground(Color.BLACK);
 		btn_ParRight.setBounds(123, 50, 60, 48);
 		panel.add(btn_ParRight);
@@ -538,7 +592,12 @@ public class Calculator {
 		btn_Remainder.setOpaque(true);
 		btn_Remainder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				textArea.append(" % ");
+				if (textField == null) {
+					textArea.append("%");
+				}
+				else if (textField.charAt(0) == '=') {
+					textArea.setText(stringResult + "%");
+				}
 			}
 		});
 		btn_Remainder.setForeground(Color.BLACK);
