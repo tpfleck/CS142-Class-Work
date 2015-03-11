@@ -13,39 +13,45 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import javax.swing.SwingConstants;
-import javax.swing.JLabel;
 
 import java.awt.Font;
 import java.awt.Color;
-import java.awt.Insets;
-import java.text.DecimalFormat;
-import java.text.Format;
 
-import javax.swing.JTextField;
 import javax.swing.JTextArea;
-import javax.swing.border.LineBorder;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.TitledBorder;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
-import static java.lang.System.*;
-
-import javax.swing.border.MatteBorder;
-import javax.swing.JToolBar;
-
 /**
- * <h1>Fleckster v0.1 Beta - Calculator</h1>
+ * Fleckster v0.1 Beta - Calculator
  * The Calculator program is a OSX Calculator look alike with limited 
  * functionality compared to the actual OSX Calculator. Thus this being
  * a calculator, no introduction how to use it is necessary.
- * <p>
- * <b>Note:</b> The source code is adequately commented for easy reading
+ * 
+ * Note: The source code is adequately commented for easy reading
  * but make no promises that it makes sense. Enjoy!
- * 	
+ * 
+ * Note 2: The following operations were used a lot in the making
+ * of this program:
+ * Double.toString(d) ⟶ Converts a Double to a String
+ * Double.parseDouble(s) ⟶ Parses the String to a Double
+ * 'String'.contains(char) ⟶ Checks the string for a given character
+ * 'String'.matches(String regex) ⟶ Checks the string for a number of given characters
+ * 'String'.replaceAll(Str1, Str2) ⟶ Replaces the contents of Str1 with Str2
+ * 'String'.charAt(num) ⟶ Can be used to meet condition if a character is at specified number
+ * 
+ * Note 3: A JavaScript engine was imported for the Eval() command
+ * which is a simplified way of running mathematical evaluations.
+ * You must import the following: 
+ *  	import javax.script.ScriptEngineManager;
+ * 		import javax.script.ScriptEngine;
+ *  	import javax.script.ScriptException;
+ * Then call the ScriptEngine like so:
+ * 		ScriptEngineManager mgr = new ScriptEngineManager();	
+ * 		ScriptEngine engine = mgr.getEngineByName("JavaScript");
+ * 
+ * Note 4: That is the end of all my notes. My head is screaming at me to turn it in
+ * 
  * @author Tyler Fleckenstein
  * @version 0.1
  * @since 2015-03-10
@@ -102,7 +108,7 @@ public class Calculator {
 	 */
 	public Calculator() {
 		
-		initialize(); // Calls on the method initialize()
+		initialize();
 		
 		
 	}
@@ -116,7 +122,7 @@ public class Calculator {
 		frmFlecksterVBeta = new JFrame();
 		frmFlecksterVBeta.setResizable(false);
 		frmFlecksterVBeta.setTitle("Fleckster v0.1 BETA");
-		frmFlecksterVBeta.setBounds(5, 100, 306, 317);
+		frmFlecksterVBeta.setBounds(100, 100, 306, 317);
 		UIManager.getSystemLookAndFeelClassName();
 		frmFlecksterVBeta.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         try {
@@ -348,25 +354,6 @@ public class Calculator {
 		btn_Clear.setBounds(1, 50, 60, 48);
 		panel.add(btn_Clear);
 		
-		JButton btn_Multiply = new JButton("x");
-		btn_Multiply.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
-		btn_Multiply.setOpaque(true);
-		btn_Multiply.setBackground(orangeColor);
-		btn_Multiply.setBorder(null);
-		btn_Multiply.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (textField == null) {
-					textArea.append("*");
-				}
-				else if (textField.charAt(0) == '=') {
-					textArea.setText(stringResult + "*");
-				}
-			}
-		});
-		btn_Multiply.setForeground(Color.WHITE);
-		btn_Multiply.setBounds(245, 50, 60, 48);
-		panel.add(btn_Multiply);
-		
 		JButton btn_Add = new JButton("+");
 		btn_Add.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
 		btn_Add.setOpaque(true);
@@ -429,6 +416,102 @@ public class Calculator {
 		btn_Divide.setBounds(245, 99, 60, 48);
 		panel.add(btn_Divide);
 		
+		JButton btn_Multiply = new JButton("x");
+		btn_Multiply.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
+		btn_Multiply.setOpaque(true);
+		btn_Multiply.setBackground(orangeColor);
+		btn_Multiply.setBorder(null);
+		btn_Multiply.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (textField == null) {
+					textArea.append("*");
+				}
+				else if (textField.charAt(0) == '=') {
+					textArea.setText(stringResult + "*");
+				}
+			}
+		});
+		btn_Multiply.setForeground(Color.WHITE);
+		btn_Multiply.setBounds(245, 50, 60, 48);
+		panel.add(btn_Multiply);
+		
+		JButton btn_Remainder = new JButton("%");
+		btn_Remainder.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
+		btn_Remainder.setBackground(grayColor);
+		btn_Remainder.setBorder(null);
+		btn_Remainder.setOpaque(true);
+		btn_Remainder.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (textField == null) {
+					textArea.append("%");
+				}
+				else if (textField.charAt(0) == '=') {
+					textArea.setText(stringResult + "%");
+				}
+			}
+		});
+		btn_Remainder.setForeground(Color.BLACK);
+		btn_Remainder.setBounds(184, 50, 60, 48);
+		panel.add(btn_Remainder);
+		
+		JButton btn_ParRight = new JButton(")");
+		btn_ParRight.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
+		btn_ParRight.setBorder(null);
+		btn_ParRight.setBackground(grayColor);
+		btn_ParRight.setOpaque(true);
+		btn_ParRight.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (textField == null) {
+					textArea.append(")");
+				}
+				else if (textField.charAt(0) == '=') {
+					textArea.setText(stringResult + ")");
+				}
+			}
+		});
+		btn_ParRight.setForeground(Color.BLACK);
+		btn_ParRight.setBounds(123, 50, 60, 48);
+		panel.add(btn_ParRight);
+		
+		JButton btn_ParLeft = new JButton("(");
+		btn_ParLeft.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
+		btn_ParLeft.setOpaque(true);
+		btn_ParLeft.setBackground(grayColor);
+		btn_ParLeft.setBorder(null);
+		btn_ParLeft.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textField = textArea.getText();
+				if (textField.charAt(0) == '=') {
+					textArea.setText(stringResult + "*(");
+				}
+				else if (textField.matches("[0-9]") != true) {
+					textArea.append("*(");
+				}
+				else {
+					textArea.append("(");
+				}
+			}
+		});
+		btn_ParLeft.setForeground(Color.BLACK);
+		btn_ParLeft.setBounds(62, 50, 60, 48);
+		panel.add(btn_ParLeft);
+		
+		JButton btn_Pi = new JButton("π");
+		btn_Pi.setBackground(grayColor);
+		btn_Pi.setBorder(null);
+		btn_Pi.setOpaque(true);
+		btn_Pi.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
+		btn_Pi.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+					result = Math.PI;
+					stringResult = Double.toString(result);
+					textArea.append(stringResult);
+			}
+		});
+		btn_Pi.setForeground(Color.BLACK);
+		btn_Pi.setBounds(1, 99, 60, 48);
+		panel.add(btn_Pi);
+		
 		JButton btn_Sqrt = new JButton("√");
 		btn_Sqrt.setBackground(grayColor);
 		btn_Sqrt.setBorder(null);
@@ -454,31 +537,6 @@ public class Calculator {
 		btn_Sqrt.setBounds(1, 148, 60, 48);
 		panel.add(btn_Sqrt);
 		
-		JButton btn_Square = new JButton("x²");
-		btn_Square.setBackground(grayColor);
-		btn_Square.setBorder(null);
-		btn_Square.setOpaque(true);
-		btn_Square.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
-		btn_Square.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					if (textField == null) {
-						result = Math.pow((Double.parseDouble(textArea.getText())), 2);
-						stringResult = Double.toString(result);
-						textArea.setText("=" + stringResult);
-						textField = textArea.getText();
-					}
-					else if (textField.charAt(0) == '=') {
-						textArea.setText(stringResult);
-						result = Math.pow((Double.parseDouble(textArea.getText())), 2);
-						stringResult = Double.toString(result);
-						textArea.setText("=" + stringResult);
-					}
-				}
-			});
-
-		btn_Square.setForeground(Color.BLACK);
-		btn_Square.setBounds(1, 246, 60, 48);
-		panel.add(btn_Square);
 		JButton btn_Power = new JButton("x^y");
 		btn_Power.setBackground(grayColor);
 		btn_Power.setBorder(null);
@@ -495,6 +553,30 @@ public class Calculator {
 		btn_Power.setBounds(1, 197, 60, 48);
 		panel.add(btn_Power);
 		
+		JButton btn_Square = new JButton("x²");
+		btn_Square.setBackground(grayColor);
+		btn_Square.setBorder(null);
+		btn_Square.setOpaque(true);
+		btn_Square.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
+		btn_Square.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (textField == null) {
+					result = Math.pow((Double.parseDouble(textArea.getText())), 2);
+					stringResult = Double.toString(result);
+					textArea.setText("=" + stringResult);
+					textField = textArea.getText();
+				}
+				else if (textField.charAt(0) == '=') {
+					textArea.setText(stringResult);
+					result = Math.pow((Double.parseDouble(textArea.getText())), 2);
+					stringResult = Double.toString(result);
+					textArea.setText("=" + stringResult);
+				}
+			}
+		});
+		btn_Square.setForeground(Color.BLACK);
+		btn_Square.setBounds(1, 246, 60, 48);
+		panel.add(btn_Square);
 		
 		JButton btn_Result = new JButton("=");
 		btn_Result.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
@@ -503,28 +585,30 @@ public class Calculator {
 		btn_Result.setBorder(null);
 		btn_Result.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			    ScriptEngineManager mgr = new ScriptEngineManager();
+			    ScriptEngineManager mgr = new ScriptEngineManager();	
 			    ScriptEngine engine = mgr.getEngineByName("JavaScript");
-			    if (textField == null) {
-					try {
-						stringResult = String.valueOf(engine.eval(textArea.getText()));
-						textArea.setText(null);
-						textArea.append("=" + stringResult);
-						textField = textArea.getText();
-					} catch (ScriptException e1) {
-						e1.printStackTrace();
-					}
-			    }
-			    else if (stringfirstNumber.contains("^") == true) {
-			    	String oldStr = stringfirstNumber;
-			    	stringfirstNumber = textArea.getText();
-			    	stringfirstNumber = stringfirstNumber.replace(oldStr, "");
-			    	secondNumber = Double.parseDouble(stringfirstNumber);
-		    		result = Math.pow(firstNumber, secondNumber); 
-		    		textArea.setText(null);
-		    		stringResult = Double.toString(result);
-		    		textArea.append("=" + stringResult);
-		    		textField = textArea.getText();
+			    if (textField == null) { 							
+				    if (stringfirstNumber.contains("^") == true) { 
+				    	String oldStr = stringfirstNumber;
+				    	stringfirstNumber = textArea.getText();
+				    	stringfirstNumber = stringfirstNumber.replace(oldStr, "");
+				    	secondNumber = Double.parseDouble(stringfirstNumber);
+			    		result = Math.pow(firstNumber, secondNumber); 
+			    		textArea.setText(null);
+			    		stringResult = Double.toString(result);
+			    		textArea.append("=" + stringResult);
+			    		textField = textArea.getText();
+				    }
+				    else {
+						try {
+							stringResult = String.valueOf(engine.eval(textArea.getText()));
+							textArea.setText(null);
+							textArea.append("=" + stringResult);
+							textField = textArea.getText();
+						} catch (ScriptException e1) {
+							e1.printStackTrace();
+						}
+				    }  
 			    }
 			    else if (textField.charAt(0) == '=') {
 					try {
@@ -542,83 +626,5 @@ public class Calculator {
 		btn_Result.setForeground(Color.WHITE);
 		btn_Result.setBounds(245, 246, 60, 48);
 		panel.add(btn_Result);
-		
-		JButton btn_ParLeft = new JButton("(");
-		btn_ParLeft.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
-		btn_ParLeft.setOpaque(true);
-		btn_ParLeft.setBackground(grayColor);
-		btn_ParLeft.setBorder(null);
-		btn_ParLeft.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				textField = textArea.getText();
-				if (textField.charAt(0) == '=') {
-					textArea.setText(stringResult + "*(");
-				}
-				else if (textField.matches("[0-9]") != true) {
-					textArea.append("*(");
-				}
-				else {
-					textArea.append("(");
-				}
-			}
-		});
-		btn_ParLeft.setForeground(Color.BLACK);
-		btn_ParLeft.setBounds(62, 50, 60, 48);
-		panel.add(btn_ParLeft);
-		
-		JButton btn_ParRight = new JButton(")");
-		btn_ParRight.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
-		btn_ParRight.setBorder(null);
-		btn_ParRight.setBackground(grayColor);
-		btn_ParRight.setOpaque(true);
-		btn_ParRight.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					if (textField == null) {
-						textArea.append(")");
-					}
-					else if (textField.charAt(0) == '=') {
-						textArea.setText(stringResult + ")");
-					}
-				}
-			});
-		btn_ParRight.setForeground(Color.BLACK);
-		btn_ParRight.setBounds(123, 50, 60, 48);
-		panel.add(btn_ParRight);
-		
-		JButton btn_Remainder = new JButton("%");
-		btn_Remainder.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
-		btn_Remainder.setBackground(grayColor);
-		btn_Remainder.setBorder(null);
-		btn_Remainder.setOpaque(true);
-		btn_Remainder.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (textField == null) {
-					textArea.append("%");
-				}
-				else if (textField.charAt(0) == '=') {
-					textArea.setText(stringResult + "%");
-				}
-			}
-		});
-		btn_Remainder.setForeground(Color.BLACK);
-		btn_Remainder.setBounds(184, 50, 60, 48);
-		panel.add(btn_Remainder);
-		
-		JButton btn_Pi = new JButton("π");
-		btn_Pi.setBackground(grayColor);
-		btn_Pi.setBorder(null);
-		btn_Pi.setOpaque(true);
-		btn_Pi.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
-		btn_Pi.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-					result = Math.PI;
-					stringResult = Double.toString(result);
-					textArea.append(stringResult);
-			}
-		});
-		btn_Pi.setForeground(Color.BLACK);
-		btn_Pi.setBounds(1, 99, 60, 48);
-		panel.add(btn_Pi);
-		
 	}
 }
